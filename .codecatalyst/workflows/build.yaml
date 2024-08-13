@@ -61,12 +61,12 @@ Actions:
     Configuration:
       GenerateReport: true
       Path: src
-      AWSRegion: us-east-1
+      AWSRegion: ap-northeast-1
     # Required; You can use an environment, AWS account connection, and role to access AWS resources.
     Environment:
       Connections:
-        - Role: CodeCatalystTestEnvironmentRole
-          Name: "123456789012"
+        - Role: Admin
+          Name: "669608275570"
       Name: TestEnvironment
   Mvn_Build_And_Deploy:
     DependsOn:
@@ -96,14 +96,14 @@ Actions:
         - Run: ./mvnw -ntp verify
         - Run: cp settings.xml $HOME/.m2/settings.xml
         - Run: ls $HOME/.m2/
-        - Run: export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain artifact-store-demo --domain-owner 123456789012 --region us-east-1 --query authorizationToken --output text`
+        - Run: export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain artifact-store-codecatalyst-demo --domain-owner 669608275570 --region ap-northeast-1 --query authorizationToken --output text`
         - Run: mvn deploy
     Compute:
       Type: EC2
     Environment:
       Connections:
-        - Role: CodeCatalystTestEnvironmentRole
-          Name: "123456789012"
+        - Role: Admin
+          Name: "669608275570"
       Name: TestEnvironment
   Build_Push_Docker_Image:
     DependsOn:
@@ -121,14 +121,13 @@ Actions:
     Environment:
       Name: TestEnvironment
       Connections:
-        - Name: "123456789012"
-          Role:
-            CodeCatalystTestEnvironmentRole
+        - Name: "669608275570"
+          Role: Admin
 
             # Defines the action's properties.
     Configuration:
       # Required; type: string; description: The name to use for the repository. The repository name may be specified on its own (such as nginx-web-app) or it can be prepended with a namespace to group the repository into a category (such as project-a/nginx-web-app)
       RepositoryName: rest-calculator
       ImageTag: latest
-      AWSRegion: us-east-1
+      AWSRegion: ap-northeast-1
       PublicRepository: false

@@ -1,7 +1,7 @@
 <settings>
     <servers>
         <server>
-            <id>artifact-store-demo</id>
+            <id>artifact-store-codecatalyst-demo</id>
             <username>aws</username>
             <password>${env.CODEARTIFACT_AUTH_TOKEN}</password>
         </server>
