@@ -17,7 +17,7 @@
 		<repository>
 			<id>artifact-store-codecatalyst-demo</id>
 			<name>artifact-store-codecatalyst-demo</name>
-			<url>https://artifact-store-codecatalyst-demo-669608275570.d.codeartifact.us-east-1.amazonaws.com/maven/artifact-store-codecatalyst-demo/</url>
+			<url>https://artifact-store-codecatalyst-demo-669608275570.d.codeartifact.ap-northeast-1.amazonaws.com/maven/artifact-store-codecatalyst-demo/</url>
 		</repository>
 	</distributionManagement>
 	<properties>
