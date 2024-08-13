@@ -40,6 +40,7 @@ Actions:
     Configuration:
       # Required - Steps are sequential instructions that run shell commands
       Steps:
+        - Run: mvn wrapper:wrapper
         - Run: ./mvnw -ntp clean
   Code_Security_Review:
     DependsOn:
