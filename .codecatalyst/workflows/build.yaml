@@ -42,36 +42,9 @@ Actions:
       Steps:
         - Run: mvn wrapper:wrapper
         - Run: ./mvnw -ntp clean
-  Code_Security_Review:
-    DependsOn:
-      - Mvn_Clean
-    # Identifies the action. Do not modify this value.
-    Identifier: codecatalyst-labs/scan-with-codeguru-security@v1.0.0
-
-    # Specifies the source and/or artifacts to pass to the action as input.
-    Inputs:
-      # Optional
-      Sources:
-        - WorkflowSource # This specifies that the action requires this Workflow as a source
-    Outputs:
-      Reports:
-        CodeguruSecuritySAST:
-          Format: SARIFSA
-          IncludePaths:
-            - codegurusecurity.sarif
-    Configuration:
-      GenerateReport: true
-      Path: src
-      AWSRegion: ap-northeast-1
-    # Required; You can use an environment, AWS account connection, and role to access AWS resources.
-    Environment:
-      Connections:
-        - Role: Admin
-          Name: "669608275570"
-      Name: TestEnvironment
   Mvn_Build_And_Deploy:
     DependsOn:
-      - Code_Security_Review
+      - Mvn_Clean
     # Identifies the action. Do not modify this value.
     Identifier: aws/build@v1.0.0
     # Specifies the source and/or artifacts to pass to the action as input.
