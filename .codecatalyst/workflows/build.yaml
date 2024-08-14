@@ -1,74 +1,37 @@
 Name: build
 SchemaVersion: "1.0"
-
-# Optional - Set automatic triggers.
 Triggers:
   - Type: Push
     Branches:
       - main
 
-# Required - Define action configurations.
 Actions:
   List_Files:
-    # Identifies the action. Do not modify this value.
     Identifier: aws/build@v1.0.0
-
-    # Specifies the source and/or artifacts to pass to the action as input.
     Inputs:
-      # Optional
       Sources:
-        - WorkflowSource # This specifies that the action requires this Workflow as a source
-
-    # Defines the action's properties.
+        - WorkflowSource
     Configuration:
-      # Required - Steps are sequential instructions that run shell commands
       Steps:
         - Run: ls -l
-  Mvn_Clean:
-    DependsOn:
-      - List_Files
-    # Identifies the action. Do not modify this value.
-    Identifier: aws/build@v1.0.0
-
-    # Specifies the source and/or artifacts to pass to the action as input.
-    Inputs:
-      # Optional
-      Sources:
-        - WorkflowSource # This specifies that the action requires this Workflow as a source
-
-    # Defines the action's properties.
-    Configuration:
-      # Required - Steps are sequential instructions that run shell commands
-      Steps:
-        - Run: mvn wrapper:wrapper
-        - Run: ./mvnw -ntp clean
   Mvn_Build_And_Deploy:
     DependsOn:
-      - Mvn_Clean
-    # Identifies the action. Do not modify this value.
+      - List_Files
     Identifier: aws/build@v1.0.0
-    # Specifies the source and/or artifacts to pass to the action as input.
     Inputs:
-      # Optional
       Sources:
-        - WorkflowSource # This specifies that the action requires this Workflow as a source
+        - WorkflowSource
     Outputs:
-      # Optional; Automatically discover reports for popular test frameworks
       AutoDiscoverReports:
         Enabled: true
-        # Use as prefix for the report files
         ReportNamePrefix: AutoDiscovered
       Artifacts:
         - Name: jar_artifact
           Files:
             - target/*.jar
             - Dockerfile
-    # Defines the action's properties.
     Configuration:
-      # Required - Steps are sequential instructions that run shell commands
       Steps:
-        - Run: mvn wrapper:wrapper
-        - Run: ./mvnw -ntp verify
         - Run: cp settings.xml $HOME/.m2/settings.xml
         - Run: ls $HOME/.m2/
         - Run: export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain artifact-store-codecatalyst-demo --domain-owner 669608275570 --region ap-northeast-1 --query authorizationToken --output text`
@@ -80,29 +43,3 @@ Actions:
         - Role: Admin
           Name: "669608275570"
       Name: TestEnvironment
-  Build_Push_Docker_Image:
-    DependsOn:
-      - Mvn_Build_And_Deploy
-    # Identifies the action. Do not modify this value.
-    Identifier: codecatalyst-labs/push-to-ecr@v1.0.3
-
-    # Specifies the source and/or artifacts to pass to the action as input.
-    Inputs:
-      # Optional
-      Artifacts:
-        - jar_artifact
-
-    # Required; You can use an environment, AWS account connection, and role to access AWS resources.
-    Environment:
-      Name: TestEnvironment
-      Connections:
-        - Name: "669608275570"
-          Role: Admin
-
-            # Defines the action's properties.
-    Configuration:
-      # Required; type: string; description: The name to use for the repository. The repository name may be specified on its own (such as nginx-web-app) or it can be prepended with a namespace to group the repository into a category (such as project-a/nginx-web-app)
-      RepositoryName: rest-calculator
-      ImageTag: latest
-      AWSRegion: ap-northeast-1
-      PublicRepository: false
